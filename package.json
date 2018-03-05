@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "dist/port-authority.umd.js",
   "module": "dist/port-authority.esm.js",
+  "repository": "Rich-Harris/port-authority",
   "types": "types/index.d.ts",
   "files": [
     "dist",
