@@ -1,8 +1,8 @@
 {
   "name": "port-authority",
   "description": "port-authority",
-  "version": "1.0.0",
-  "main": "dist/port-authority.umd.js",
+  "version": "1.0.1",
+  "main": "dist/port-authority.cjs.js",
   "module": "dist/port-authority.esm.js",
   "types": "types/index.d.ts",
   "files": [
