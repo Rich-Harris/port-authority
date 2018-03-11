@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.0.2
+
+* Remove zombie timeout
+
 ## 1.0.1
 
 * Switch to CJS export for `pkg.main`, UMD makes no sense
