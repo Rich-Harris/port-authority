@@ -2,15 +2,24 @@ import * as net from 'net';
 
 export function wait(port: number, { timeout = 5000 } = {}) {
 	return new Promise((fulfil, reject) => {
-		get_connection(port, fulfil);
-		setTimeout(() => reject(new Error(`timed out waiting for connection`)), timeout);
+		const t = setTimeout(() => {
+			reject(new Error(`timed out waiting for connection`))
+		}, timeout);
+
+		get_connection(port, () => {
+			clearTimeout(t);
+			fulfil();
+		});
 	});
 }
 
 function get_connection(port: number, cb: () => void) {
+	let timeout: NodeJS.Timer;
+
 	const socket = net.connect(port, 'localhost', () => {
 		cb();
 		socket.destroy();
+		clearTimeout(timeout);
 	});
 
 	socket.on('error', () => {
@@ -19,7 +28,7 @@ function get_connection(port: number, cb: () => void) {
 		}, 10);
 	});
 
-	setTimeout(() => {
+	timeout = setTimeout(() => {
 		socket.destroy();
 	}, 1000);
 }

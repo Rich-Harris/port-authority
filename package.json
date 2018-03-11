@@ -26,8 +26,7 @@
     "build-declarations": "tsc -d && node scripts/move-type-declarations.js",
     "build": "npm run build-declarations && rollup -c",
     "test": "mocha --opts mocha.opts",
-    "pretest": "npm run build",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test && npm run build"
   },
   "license": "LIL"
 }
