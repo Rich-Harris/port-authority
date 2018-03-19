@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.0.3
+
+* Detect WSL and work around bugs ([#5](https://github.com/Rich-Harris/port-authority/pull/5))
+
 ## 1.0.2
 
 * Remove zombie timeout
