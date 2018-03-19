@@ -4,22 +4,22 @@ let promise: Promise<any>;
 
 export function weird() {
 	if (!promise) {
-		promise = get_weird();
+		promise = get_weird(9000);
 	}
 	return promise;
 }
 
-function get_weird() {
+function get_weird(port: number) {
 	return new Promise(fulfil => {
 		const server = net.createServer();
 
 		server.unref();
 
 		server.on('error', () => {
-			fulfil(false);
+			fulfil(get_weird(port + 1));
 		});
 
-		server.listen({ port: 9999 }, () => {
+		server.listen({ port }, () => {
 			const server2 = net.createServer();
 
 			server2.unref();
@@ -30,7 +30,7 @@ function get_weird() {
 				});
 			});
 
-			server2.listen({ port: 9999 }, () => {
+			server2.listen({ port }, () => {
 				server2.close(() => {
 					server.close(() => {
 						fulfil(true);
