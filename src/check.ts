@@ -1,19 +1,39 @@
 import * as net from 'net';
+import { weird } from './weird';
 
 export function check(port: number) {
-	return new Promise(fulfil => {
-		const server = net.createServer();
+	return weird().then(weird => {
+		if (weird) {
+			return check_weird(port);
+		}
 
-		server.unref();
+		return new Promise(fulfil => {
+			const server = net.createServer();
 
-		server.on('error', () => {
-			fulfil(false);
-		});
+			server.unref();
 
-		server.listen({ port }, () => {
-			server.close(() => {
-				fulfil(true);
+			server.on('error', () => {
+				fulfil(false);
+			});
+
+			server.listen({ port }, () => {
+				server.close(() => {
+					fulfil(true);
+				});
 			});
 		});
+	});
+}
+
+export function check_weird(port: number) {
+	return new Promise(fulfil => {
+		const client = net
+			.createConnection({ port }, () => {
+				client.end();
+				fulfil(false);
+			})
+			.on('error', () => {
+				fulfil(true);
+			});
 	});
 }
