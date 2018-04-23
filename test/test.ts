@@ -98,12 +98,16 @@ describe('port-authority', () => {
 			assert.ok(listening);
 
 			// spin cpu so we have some load
-			spinCpu(5000);
 			// check we can still wait on port
-			await ports.wait(3000);
-
-			await server.close();
-		}).timeout(11000) // two * default ports.wait() timeouts + one second
+			try {
+				spinCpu(5000);
+				await ports.wait(3000);
+				await server.close();
+			}catch(error){
+				await server.close();
+				assert.fail(error.message);
+			}
+		}).timeout(11000); // two * default ports.wait() timeouts + one second
 	});
 });
 
