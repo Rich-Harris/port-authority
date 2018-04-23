@@ -30,5 +30,5 @@ function get_connection(port: number, cb: () => void) {
 
 	timeout = setTimeout(() => {
 		socket.destroy();
-	}, 1000);
+	}, 5000);
 }
