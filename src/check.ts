@@ -25,7 +25,7 @@ export function check(port: number) {
 	});
 }
 
-export function check_weird(port: number) {
+function check_weird(port: number) {
 	return new Promise(fulfil => {
 		const client = net
 			.createConnection({ port }, () => {
