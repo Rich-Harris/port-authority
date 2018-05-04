@@ -84,5 +84,53 @@ describe('port-authority', () => {
 
 			await server.close();
 		});
+
+		it('waits for port under cpu load', async () => {
+			const server = createServer();
+			
+			let listening = false;
+			server.listen(3000).then(() => {
+				listening = true;
+			});
+			// check servers actually listening and ports available
+			assert.ok(!listening);
+			await ports.wait(3000);
+			assert.ok(listening);
+
+			// spin cpu so we have some load
+			// check we can still wait on port
+			try {
+				spinCpu(5000);
+				await ports.wait(3000);
+				await server.close();
+			}catch(error){
+				await server.close();
+				assert.fail(error.message);
+			}
+		}).timeout(11000); // two * default ports.wait() timeouts + one second
 	});
 });
+
+function spinCpu(duration:number /* ms */){
+	var spinning = true;
+	// stop after ~5s
+	setTimeout(()=>spinning=false, duration);
+	loop();
+
+	function loop(){
+		if(!spinning) return;
+		blockCpuFor(999);
+		setTimeout(loop, 1);
+	}
+
+	function blockCpuFor(ms:number) {
+		var end = new Date().getTime() + ms;
+		var counter = 0;
+		while(spinning) {
+			counter += new Date().getTime();
+			if (new Date().getTime() > end){
+				break;
+			}
+		}	
+	}
+}
