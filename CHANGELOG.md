@@ -1,5 +1,10 @@
 # post-authority changelog
 
+## 1.0.4
+
+* Remove extraneous export ([#7](https://github.com/Rich-Harris/port-authority/pull/7))
+* Increase timeout ([#5](https://github.com/Rich-Harris/port-authority/pull/6))
+
 ## 1.0.3
 
 * Detect WSL and work around bugs ([#5](https://github.com/Rich-Harris/port-authority/pull/5))
