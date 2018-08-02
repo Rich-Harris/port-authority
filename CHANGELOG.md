@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.0.5
+
+* Clear existing timeout when retrying in `wait`
+
 ## 1.0.4
 
 * Remove extraneous export ([#7](https://github.com/Rich-Harris/port-authority/pull/7))

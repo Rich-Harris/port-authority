@@ -1,7 +1,7 @@
 {
   "name": "port-authority",
   "description": "port-authority",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/port-authority.cjs.js",
   "module": "dist/port-authority.esm.js",
   "repository": "Rich-Harris/port-authority",
@@ -25,6 +25,7 @@
   "scripts": {
     "build-declarations": "tsc -d && node scripts/move-type-declarations.js",
     "build": "npm run build-declarations && rollup -c",
+    "dev": "rollup -cw",
     "test": "mocha --opts mocha.opts",
     "prepublishOnly": "npm test && npm run build"
   },
