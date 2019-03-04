@@ -23,7 +23,7 @@ function get_port(port: number, host: string | undefined, cb: (port: number) => 
 		get_port(port + 1, host, cb);
 	});
 
-	server.listen({ port }, () => {
+	server.listen({ port, host }, () => {
 		server.close(() => {
 			cb(port);
 		});
