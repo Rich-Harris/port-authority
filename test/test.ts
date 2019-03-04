@@ -7,9 +7,9 @@ describe('port-authority', () => {
 		const server = http.createServer();
 
 		return {
-			listen(port: number) {
+			listen(port: number, host?: string) {
 				return new Promise((fulfil, reject) => {
-					server.listen(port, (err?: Error) => {
+					server.listen(port, host, (err?: Error) => {
 						if (err) reject(err);
 						else fulfil();
 					});
@@ -46,6 +46,39 @@ describe('port-authority', () => {
 
 			await server.close();
 		});
+
+		describe('with host', () => {
+			it('returns true if a port is available', async () => {
+				assert.equal(
+					await ports.check(3000, '127.0.0.1'),
+					true
+				);
+			});
+
+			it('returns true if a port is available when a server is bound to a different host', async () => {
+				const server = createServer();
+				await server.listen(3000, '0.0.0.0');
+
+				assert.equal(
+					await ports.check(3000, '127.0.0.1'),
+					true
+				);
+
+				await server.close();
+			});
+
+			it('returns false if a port is unavailable', async () => {
+				const server = createServer();
+				await server.listen(3000, '127.0.0.1');
+
+				assert.equal(
+					await ports.check(3000, '127.0.0.1'),
+					false
+				);
+
+				await server.close();
+			});
+		});
 	});
 
 	describe('find', () => {
@@ -67,6 +100,39 @@ describe('port-authority', () => {
 
 			await server.close();
 		});
+
+		describe('with host', () => {
+			it('returns input if port is available', async () => {
+				assert.equal(
+					await ports.find(3000, '127.0.0.1'),
+					3000
+				);
+			});
+
+			it('returns input if port is available when a server is bound to a different host', async () => {
+				const server = createServer();
+				await server.listen(3000, '0.0.0.0');
+
+				assert.equal(
+					await ports.find(3000, '127.0.0.1'),
+					3000
+				);
+
+				await server.close();
+			});
+
+			it('finds nearest available port to input', async () => {
+				const server = createServer();
+				await server.listen(3000, '127.0.0.1');
+
+				assert.equal(
+					await ports.find(3000, '127.0.0.1'),
+					3001
+				);
+
+				await server.close();
+			});
+		});
 	});
 
 	describe('wait', () => {
@@ -80,6 +146,21 @@ describe('port-authority', () => {
 
 			assert.ok(!listening);
 			await ports.wait(3000);
+			assert.ok(listening);
+
+			await server.close();
+		});
+
+		it('waits for port on host', async () => {
+			const server = createServer();
+
+			let listening = false;
+			server.listen(3000, '127.0.0.1').then(() => {
+				listening = true;
+			});
+
+			assert.ok(!listening);
+			await ports.wait(3000, { host: '127.0.0.1' });
 			assert.ok(listening);
 
 			await server.close();
