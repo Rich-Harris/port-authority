@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.1.0
+
+* Add `blame` and `kill` functions ([#2](https://github.com/Rich-Harris/port-authority/issues/2))
+
 ## 1.0.5
 
 * Clear existing timeout when retrying in `wait`
