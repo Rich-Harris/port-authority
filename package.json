@@ -8,11 +8,11 @@
   "types": "types/index.d.ts",
   "files": [
     "dist",
-	  "types"
+    "types"
   ],
   "devDependencies": {
-    "@types/mocha": "^2.2.44",
-    "@types/node": "^8.0.53",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^8.10.60",
     "glob": "^7.1.2",
     "mocha": "^4.0.1",
     "rollup": "^0.52.0",
