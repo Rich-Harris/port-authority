@@ -1,7 +1,7 @@
 {
   "name": "port-authority",
   "description": "port-authority",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/port-authority.cjs.js",
   "module": "dist/port-authority.esm.js",
   "repository": "Rich-Harris/port-authority",
@@ -11,16 +11,16 @@
     "types"
   ],
   "devDependencies": {
-    "@types/mocha": "^2.2.48",
-    "@types/node": "^8.10.60",
-    "glob": "^7.1.2",
-    "mocha": "^4.0.1",
-    "rollup": "^0.52.0",
-    "rollup-plugin-typescript": "^0.8.1",
+    "@rollup/plugin-sucrase": "^3.0.0",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.13.4",
+    "mocha": "^7.1.2",
+    "rollup": "^2.7.6",
     "rollup-plugin-virtual": "^1.0.1",
     "sander": "^0.6.0",
-    "ts-node": "^3.3.0",
-    "typescript": "^2.6.2"
+    "tiny-glob": "^0.2.6",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "build-declarations": "tsc -d && node scripts/move-type-declarations.js",

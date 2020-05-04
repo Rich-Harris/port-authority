@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.1.1
+
+* Update deps, fix broken build
+
 ## 1.1.0
 
 * Add `blame` and `kill` functions ([#2](https://github.com/Rich-Harris/port-authority/issues/2))

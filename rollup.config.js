@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript';
+import sucrase from '@rollup/plugin-sucrase';
 import pkg from './package.json';
 
 export default {
@@ -8,8 +8,9 @@ export default {
 		{ file: pkg.module, format: 'es' }
 	],
 	plugins: [
-		typescript({
-			typescript: require('typescript')
+		sucrase({
+			exclude: ['node_modules/**'],
+			transforms: ['typescript']
 		})
 	]
 };
