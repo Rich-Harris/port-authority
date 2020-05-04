@@ -46,6 +46,23 @@ start();
 There are existing libraries to do this stuff, but I couldn't find any that do all the things that port-authority does, with treeshakeable functions and a modern Promise-based API.
 
 
+## Additional functions
+
+On Unix-like systems, you can also do the following:
+
+```js
+// Find the process ID that is using port n.
+// Returns `null` if port is currently unused
+const pid = await ports.blame(n);
+
+// Kill the process using port n, if any.
+// Returns `true` if the port was in use
+const killed = await ports.kill(n);
+```
+
+PRs welcome to make this work on all operating systems.
+
+
 ## License
 
 [LIL](LICENSE)

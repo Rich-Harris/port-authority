@@ -27,6 +27,31 @@ describe('port-authority', () => {
 		};
 	}
 
+	describe('blame', () => {
+		it('returns null if port is unoccupied', async () => {
+			const pid = await ports.blame(3000);
+
+			assert.equal(
+				pid,
+				null
+			);
+		});
+
+		it('returns the ID of a process on a given port', async () => {
+			const server = createServer();
+			await server.listen(3000);
+
+			const pid = await ports.blame(3000);
+
+			assert.equal(
+				pid,
+				process.pid
+			);
+
+			await server.close();
+		});
+	});
+
 	describe('check', () => {
 		it('returns true if a port is available', async () => {
 			assert.equal(
@@ -69,6 +94,18 @@ describe('port-authority', () => {
 		});
 	});
 
+	// uncomment to test
+	describe('kill', () => {
+		// it('kills the process occupying a given port', async () => {
+		// 	const server = createServer();
+		// 	await server.listen(3000);
+
+		// 	await ports.kill(3000);
+
+		// 	assert.ok(false);
+		// });
+	});
+
 	describe('wait', () => {
 		it('waits for port', async () => {
 			const server = createServer();
@@ -87,7 +124,7 @@ describe('port-authority', () => {
 
 		it('waits for port under cpu load', async () => {
 			const server = createServer();
-			
+
 			let listening = false;
 			server.listen(3000).then(() => {
 				listening = true;
@@ -131,6 +168,6 @@ function spinCpu(duration:number /* ms */){
 			if (new Date().getTime() > end){
 				break;
 			}
-		}	
+		}
 	}
 }
