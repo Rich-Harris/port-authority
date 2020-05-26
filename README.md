@@ -29,11 +29,16 @@ async function start(port) {
   });
 
   try {
-    await ports.wait(port, {
+    await ports.wait(port, {  // also aliased as ports.waitUntilBusy(...)
       timeout: 5000
     });
 
     console.log(`> Server is running on port ${port}`);
+
+    setTimeout(() => proc.kill(), 100);
+    await ports.until(port); // also aliased as ports.waitUntilFree(...)
+
+    console.log(`> Port ${port} is free`);
   } catch (err) {
     console.log(`> Could not find server on port ${port}`);
     proc.kill();

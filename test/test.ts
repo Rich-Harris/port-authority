@@ -1,6 +1,9 @@
 import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index';
+import { Test } from 'mocha';
+
+const TEST_PORT = 55555
 
 describe('port-authority', () => {
 	function createServer() {
@@ -29,7 +32,7 @@ describe('port-authority', () => {
 
 	describe('blame', () => {
 		it('returns null if port is unoccupied', async () => {
-			const pid = await ports.blame(3000);
+			const pid = await ports.blame(TEST_PORT);
 
 			assert.equal(
 				pid,
@@ -39,9 +42,9 @@ describe('port-authority', () => {
 
 		it('returns the ID of a process on a given port', async () => {
 			const server = createServer();
-			await server.listen(3000);
+			await server.listen(TEST_PORT);
 
-			const pid = await ports.blame(3000);
+			const pid = await ports.blame(TEST_PORT);
 
 			assert.equal(
 				pid,
@@ -55,17 +58,17 @@ describe('port-authority', () => {
 	describe('check', () => {
 		it('returns true if a port is available', async () => {
 			assert.equal(
-				await ports.check(3000),
+				await ports.check(TEST_PORT),
 				true
 			);
 		});
 
 		it('returns false if a port is unavailable', async () => {
 			const server = createServer();
-			await server.listen(3000);
+			await server.listen(TEST_PORT);
 
 			assert.equal(
-				await ports.check(3000),
+				await ports.check(TEST_PORT),
 				false
 			);
 
@@ -76,18 +79,18 @@ describe('port-authority', () => {
 	describe('find', () => {
 		it('returns input if port is available', async () => {
 			assert.equal(
-				await ports.find(3000),
-				3000
+				await ports.find(TEST_PORT),
+				TEST_PORT
 			);
 		});
 
 		it('finds nearest available port to input', async () => {
 			const server = createServer();
-			await server.listen(3000);
+			await server.listen(TEST_PORT);
 
 			assert.equal(
-				await ports.find(3000),
-				3001
+				await ports.find(TEST_PORT),
+				TEST_PORT + 1
 			);
 
 			await server.close();
@@ -111,12 +114,12 @@ describe('port-authority', () => {
 			const server = createServer();
 
 			let listening = false;
-			server.listen(3000).then(() => {
+			server.listen(TEST_PORT).then(() => {
 				listening = true;
 			});
 
 			assert.ok(!listening);
-			await ports.wait(3000);
+			await ports.wait(TEST_PORT);
 			assert.ok(listening);
 
 			await server.close();
@@ -126,25 +129,51 @@ describe('port-authority', () => {
 			const server = createServer();
 
 			let listening = false;
-			server.listen(3000).then(() => {
+			server.listen(TEST_PORT).then(() => {
 				listening = true;
 			});
 			// check servers actually listening and ports available
 			assert.ok(!listening);
-			await ports.wait(3000);
+			await ports.wait(TEST_PORT);
 			assert.ok(listening);
 
 			// spin cpu so we have some load
 			// check we can still wait on port
 			try {
 				spinCpu(5000);
-				await ports.wait(3000);
+				await ports.wait(TEST_PORT);
 				await server.close();
 			}catch(error){
 				await server.close();
 				assert.fail(error.message);
 			}
 		}).timeout(11000); // two * default ports.wait() timeouts + one second
+	});
+
+	describe('until', () => {
+		const snooze  = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
+
+		it('waits for port to become available', async () => {
+			const server = createServer();
+
+			await server.listen(TEST_PORT);
+			const promise = ports.until(TEST_PORT);
+			await snooze(1000);
+			server.close();
+
+			return promise;
+		});
+
+		it('errors after given timeout', async () => {
+			const server = createServer();
+
+			await server.listen(TEST_PORT);
+			const promise = ports.until(TEST_PORT, { timeout: 500 });
+			await snooze(1000);
+			server.close();
+
+			assert.rejects(promise);
+		});
 	});
 });
 
