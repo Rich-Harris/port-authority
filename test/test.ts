@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as ports from '../src/index';
 import { Test } from 'mocha';
 
-const TEST_PORT = 55555
+const TEST_PORT = 3000
 
 describe('port-authority', () => {
 	function createServer() {
@@ -45,13 +45,13 @@ describe('port-authority', () => {
 			await server.listen(TEST_PORT);
 
 			const pid = await ports.blame(TEST_PORT);
-
+			
+			await server.close();
+			
 			assert.equal(
 				pid,
 				process.pid
 			);
-
-			await server.close();
 		});
 	});
 
