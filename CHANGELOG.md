@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.1.2
+
+* Await completion of `kill` command when calling `ports.kill(...)`
+
 ## 1.1.1
 
 * Update deps, fix broken build
