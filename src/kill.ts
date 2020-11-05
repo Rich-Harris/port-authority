@@ -1,5 +1,5 @@
 import { blame } from './blame';
-import { exec } from 'child_process';
+import { exec } from './utils';
 
 export async function kill(port: number) {
 	const pid = await blame(port);

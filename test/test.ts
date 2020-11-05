@@ -1,3 +1,5 @@
+import { fork } from 'child_process';
+import { join } from 'path';
 import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index';
@@ -94,16 +96,20 @@ describe('port-authority', () => {
 		});
 	});
 
-	// uncomment to test
 	describe('kill', () => {
-		// it('kills the process occupying a given port', async () => {
-		// 	const server = createServer();
-		// 	await server.listen(3000);
+		it('kills the process occupying a given port', async () => {
+			const child = fork(join(__dirname, 'server.js'));
+			await ports.wait(3000);
 
-		// 	await ports.kill(3000);
+			let pid = await ports.blame(3000);
+			assert.ok(pid);
 
-		// 	assert.ok(false);
-		// });
+			const killed = await ports.kill(3000);
+			assert.ok(killed);
+
+			pid = await ports.blame(3000);
+			assert.ok(!pid);
+		});
 	});
 
 	describe('wait', () => {
