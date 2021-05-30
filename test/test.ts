@@ -3,15 +3,15 @@ import { join } from 'path';
 import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index';
+import { host } from "../src/constants";
 
 describe('port-authority', () => {
 	function createServer() {
 		const server = http.createServer();
-
 		return {
 			listen(port: number) {
 				return new Promise((fulfil, reject) => {
-					server.listen(port, (err?: Error) => {
+					server.listen({host, port}, (err?: Error) => {
 						if (err) reject(err);
 						else fulfil();
 					});
@@ -29,6 +29,19 @@ describe('port-authority', () => {
 		};
 	}
 
+	let server: any;
+	beforeEach(() => {
+		server = createServer();
+	})
+
+	afterEach(async () => {
+		try {
+			await server.close();	
+		} catch (error) {
+			// Ignore not listening error
+		}
+	})
+
 	describe('blame', () => {
 		it('returns null if port is unoccupied', async () => {
 			const pid = await ports.blame(3000);
@@ -40,7 +53,6 @@ describe('port-authority', () => {
 		});
 
 		it('returns the ID of a process on a given port', async () => {
-			const server = createServer();
 			await server.listen(3000);
 
 			const pid = await ports.blame(3000);
@@ -49,8 +61,6 @@ describe('port-authority', () => {
 				pid,
 				process.pid
 			);
-
-			await server.close();
 		});
 	});
 
@@ -63,7 +73,6 @@ describe('port-authority', () => {
 		});
 
 		it('returns false if a port is unavailable', async () => {
-			const server = createServer();
 			await server.listen(3000);
 
 			assert.equal(
@@ -71,7 +80,6 @@ describe('port-authority', () => {
 				false
 			);
 
-			await server.close();
 		});
 	});
 
@@ -84,15 +92,11 @@ describe('port-authority', () => {
 		});
 
 		it('finds nearest available port to input', async () => {
-			const server = createServer();
 			await server.listen(3000);
-
 			assert.equal(
 				await ports.find(3000),
 				3001
-			);
-
-			await server.close();
+			);			
 		});
 	});
 
@@ -114,8 +118,6 @@ describe('port-authority', () => {
 
 	describe('wait', () => {
 		it('waits for port', async () => {
-			const server = createServer();
-
 			let listening = false;
 			server.listen(3000).then(() => {
 				listening = true;
@@ -124,13 +126,9 @@ describe('port-authority', () => {
 			assert.ok(!listening);
 			await ports.wait(3000);
 			assert.ok(listening);
-
-			await server.close();
 		});
 
 		it('waits for port under cpu load', async () => {
-			const server = createServer();
-
 			let listening = false;
 			server.listen(3000).then(() => {
 				listening = true;
@@ -145,9 +143,7 @@ describe('port-authority', () => {
 			try {
 				spinCpu(5000);
 				await ports.wait(3000);
-				await server.close();
 			}catch(error){
-				await server.close();
 				assert.fail(error.message);
 			}
 		}).timeout(11000); // two * default ports.wait() timeouts + one second
@@ -155,7 +151,7 @@ describe('port-authority', () => {
 });
 
 function spinCpu(duration:number /* ms */){
-	var spinning = true;
+	let spinning = true;
 	// stop after ~5s
 	setTimeout(()=>spinning=false, duration);
 	loop();
@@ -167,8 +163,8 @@ function spinCpu(duration:number /* ms */){
 	}
 
 	function blockCpuFor(ms:number) {
-		var end = new Date().getTime() + ms;
-		var counter = 0;
+		let end = new Date().getTime() + ms;
+		let counter = 0;
 		while(spinning) {
 			counter += new Date().getTime();
 			if (new Date().getTime() > end){
