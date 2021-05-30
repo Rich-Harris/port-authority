@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 1.1.3
+
+* Bind to localhost to resolve inconsistent behaviours
+
 ## 1.1.2
 
 * Await completion of `kill` command when calling `ports.kill(...)`
