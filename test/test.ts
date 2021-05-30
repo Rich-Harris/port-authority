@@ -3,7 +3,7 @@ import { join } from 'path';
 import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index';
-import { host } from "../src/constants";
+import { host } from '../src/constants';
 
 describe('port-authority', () => {
 	function createServer() {

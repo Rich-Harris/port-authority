@@ -1,6 +1,6 @@
 import * as net from 'net';
 import { weird } from './weird';
-import { host } from "./constants";
+import { host } from './constants';
 
 export function find(port: number): Promise<number> {
 	return <Promise<number>>weird().then(weird => {

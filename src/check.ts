@@ -1,6 +1,6 @@
 import * as net from 'net';
 import { weird } from './weird';
-import { host } from "./constants";
+import { host } from './constants';
 
 export function check(port: number) {
 	return weird().then(weird => {
