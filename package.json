@@ -10,6 +10,7 @@
 		"dist",
 		"types"
 	],
+	"type": "module",
 	"devDependencies": {
 		"@rollup/plugin-sucrase": "^3.0.0",
 		"@types/mocha": "^7.0.2",
@@ -26,7 +27,7 @@
 		"build-declarations": "tsc",
 		"build": "npm run build-declarations && rollup -c",
 		"dev": "rollup -cw",
-		"test": "mocha --opts mocha.opts",
+		"test": "mocha test/test.js",
 		"prepublishOnly": "npm test && npm run build"
 	},
 	"license": "LIL"

@@ -4,7 +4,7 @@ import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index.js';
 import { host } from '../src/constants.js';
-import type { Socket } from 'net';
+import { fileURLToPath } from 'url';
 
 const TEST_PORT = 3000;
 
@@ -14,7 +14,8 @@ describe('port-authority', function () {
 	function createServer() {
 		const server = http.createServer();
 
-		const sockets: Set<Socket> = new Set();
+		/** @type {Set<import('net').Socket>} */
+		const sockets = new Set();
 
 		server.on('connection', (socket) => {
 			sockets.add(socket);
@@ -27,9 +28,10 @@ describe('port-authority', function () {
 		return {
 			_: server,
 
-			listen(port: number) {
+			/** @param {number} port */
+			listen(port) {
 				return new Promise((fulfil, reject) => {
-					server.listen({ host, port }, (err?: Error) => {
+					server.listen({ host, port }, (err) => {
 						if (err) reject(err);
 						else fulfil(undefined);
 					});
@@ -40,7 +42,7 @@ describe('port-authority', function () {
 				return new Promise((fulfil, reject) => {
 					sockets.forEach((socket) => socket.destroy());
 
-					server.close((err?: Error) => {
+					server.close((err) => {
 						if (err) reject(err);
 						else fulfil(undefined);
 					});
@@ -49,7 +51,7 @@ describe('port-authority', function () {
 		};
 	}
 
-	let server: any;
+	let server;
 	beforeEach(() => {
 		server = createServer();
 	});
@@ -104,7 +106,8 @@ describe('port-authority', function () {
 
 	describe('kill', () => {
 		it('kills the process occupying a given port', async () => {
-			fork(join(__dirname, 'server.js'));
+			const path = fileURLToPath(new URL('./server.js', import.meta.url));
+			fork(path);
 			await ports.wait(TEST_PORT);
 
 			let pid = await ports.blame(TEST_PORT);
@@ -152,7 +155,7 @@ describe('port-authority', function () {
 	});
 
 	describe('until', () => {
-		const snooze = (timeout: number) =>
+		const snooze = (timeout) =>
 			new Promise((resolve) => setTimeout(resolve, timeout));
 
 		it('waits for port to become available', async () => {
@@ -177,7 +180,8 @@ describe('port-authority', function () {
 	});
 });
 
-function spinCpu(duration: number /* ms */) {
+/** @param {number} duration */
+function spinCpu(duration) {
 	let spinning = true;
 	// stop after ~5s
 	setTimeout(() => (spinning = false), duration);
@@ -189,7 +193,8 @@ function spinCpu(duration: number /* ms */) {
 		setTimeout(loop, 1);
 	}
 
-	function blockCpuFor(ms: number) {
+	/** @param {number} ms */
+	function blockCpuFor(ms) {
 		let end = new Date().getTime() + ms;
 		let counter = 0;
 		while (spinning) {
