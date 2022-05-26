@@ -1,6 +1,7 @@
 import * as child_process from 'child_process';
 
-export function exec(cmd: string): Promise<{ stdout: string, stderr: string }> {
+/** @param {string} cmd */
+export function exec(cmd) {
 	return new Promise((fulfil, reject) => {
 		child_process.exec(cmd, (error, stdout, stderr) => {
 			if (error) return reject(error);

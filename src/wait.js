@@ -1,9 +1,14 @@
 import * as net from 'net';
 
-export function wait(port: number, { timeout = 5000 } = {}) {
+/**
+ * Wait until a port is available
+ * @param {number} port
+ * @param {{ timeout?: number }} options
+ */
+export function wait(port, { timeout = 5000 } = {}) {
 	return new Promise((fulfil, reject) => {
 		const t = setTimeout(() => {
-			reject(new Error(`timed out waiting for connection`))
+			reject(new Error(`timed out waiting for connection`));
 		}, timeout);
 
 		get_connection(port, () => {
@@ -13,8 +18,13 @@ export function wait(port: number, { timeout = 5000 } = {}) {
 	});
 }
 
-function get_connection(port: number, cb: () => void) {
-	let timeout: NodeJS.Timer;
+/**
+ * @param {number} port
+ * @param {() => void} cb
+ */
+function get_connection(port, cb) {
+	/** @type {NodeJS.Timeout} */
+	let timeout;
 
 	const socket = net.connect(port, 'localhost', () => {
 		cb();

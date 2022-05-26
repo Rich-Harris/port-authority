@@ -1,6 +1,7 @@
-import { exec } from './utils';
+import { exec } from './utils.js';
 
-export async function blame(port: number) {
+/** @param {number} port */
+export async function blame(port) {
 	try {
 		const { stdout } = await exec(`lsof -i :${port} -sTCP:LISTEN -Fp`);
 

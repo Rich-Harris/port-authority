@@ -2,8 +2,8 @@ import { fork } from 'child_process';
 import { join } from 'path';
 import * as assert from 'assert';
 import * as http from 'http';
-import * as ports from '../src/index';
-import { host } from '../src/constants';
+import * as ports from '../src/index.js';
+import { host } from '../src/constants.js';
 import type { Socket } from 'net';
 
 const TEST_PORT = 3000;
