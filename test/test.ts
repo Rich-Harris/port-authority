@@ -160,8 +160,7 @@ describe('port-authority', function () {
 
 			await server.listen(TEST_PORT);
 			const promise = ports.until(TEST_PORT);
-			await snooze(1000);
-			server.close();
+			snooze(1000).then(() => server.close());
 
 			return promise;
 		});
@@ -171,8 +170,7 @@ describe('port-authority', function () {
 
 			await server.listen(TEST_PORT);
 			const promise = ports.until(TEST_PORT, { timeout: 500 });
-			await snooze(1000);
-			server.close();
+			snooze(1000).then(() => server.close());
 
 			assert.rejects(promise);
 		});
