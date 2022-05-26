@@ -1,9 +1,8 @@
 import { fork } from 'child_process';
-import { join } from 'path';
 import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index.js';
-import { host } from '../src/constants.js';
+import { host } from '../src/shared/constants.js';
 import { fileURLToPath } from 'url';
 
 const TEST_PORT = 3000;
@@ -108,7 +107,7 @@ describe('port-authority', function () {
 		it('kills the process occupying a given port', async () => {
 			const path = fileURLToPath(new URL('./server.js', import.meta.url));
 			fork(path);
-			await ports.wait(TEST_PORT);
+			await ports.waitUntilBusy(TEST_PORT);
 
 			let pid = await ports.blame(TEST_PORT);
 			assert.ok(pid);
@@ -129,7 +128,7 @@ describe('port-authority', function () {
 			});
 
 			assert.ok(!listening);
-			await ports.wait(TEST_PORT);
+			await ports.waitUntilBusy(TEST_PORT);
 			assert.ok(listening);
 		});
 
@@ -140,18 +139,18 @@ describe('port-authority', function () {
 			});
 			// check servers actually listening and ports available
 			assert.ok(!listening);
-			await ports.wait(TEST_PORT);
+			await ports.waitUntilBusy(TEST_PORT);
 			assert.ok(listening);
 
 			// spin cpu so we have some load
 			// check we can still wait on port
 			try {
 				spinCpu(5000);
-				await ports.wait(TEST_PORT);
+				await ports.waitUntilBusy(TEST_PORT);
 			} catch (error) {
 				assert.fail(error.message);
 			}
-		}).timeout(11000); // two * default ports.wait() timeouts + one second
+		}).timeout(11000); // two * default ports.waitUntilBusy() timeouts + one second
 	});
 
 	describe('until', () => {
@@ -162,7 +161,7 @@ describe('port-authority', function () {
 			const server = createServer();
 
 			await server.listen(TEST_PORT);
-			const promise = ports.until(TEST_PORT);
+			const promise = ports.waitUntilFree(TEST_PORT);
 			snooze(1000).then(() => server.close());
 
 			return promise;
@@ -172,7 +171,7 @@ describe('port-authority', function () {
 			const server = createServer();
 
 			await server.listen(TEST_PORT);
-			const promise = ports.until(TEST_PORT, { timeout: 500 });
+			const promise = ports.waitUntilFree(TEST_PORT, { timeout: 500 });
 			snooze(1000).then(() => server.close());
 
 			assert.rejects(promise);

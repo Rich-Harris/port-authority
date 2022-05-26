@@ -1,6 +1,9 @@
-import { exec } from './utils.js';
+import { exec } from './shared/utils.js';
 
-/** @param {number} port */
+/**
+ * Find the PID of the process using `port`
+ * @param {number} port
+ */
 export async function blame(port) {
 	try {
 		const { stdout } = await exec(`lsof -i :${port} -sTCP:LISTEN -Fp`);

@@ -1,6 +1,6 @@
 import * as net from 'net';
-import { weird } from './weird.js';
-import { host } from './constants.js';
+import { weird } from './shared/weird.js';
+import { host } from './shared/constants.js';
 
 /**
  * Find an available port

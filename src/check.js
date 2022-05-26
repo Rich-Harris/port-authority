@@ -1,8 +1,11 @@
 import * as net from 'net';
-import { weird } from './weird.js';
-import { host } from './constants.js';
+import { weird } from './shared/weird.js';
+import { host } from './shared/constants.js';
 
-/** @param {number} port */
+/**
+ * Check if `port` is available
+ * @param {number} port
+ */
 export function check(port) {
 	return weird().then((weird) => {
 		if (weird) {

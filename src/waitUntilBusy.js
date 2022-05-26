@@ -1,11 +1,11 @@
 import * as net from 'net';
 
 /**
- * Wait until a port is available
+ * Wait until `port` is busy
  * @param {number} port
  * @param {{ timeout?: number }} options
  */
-export function wait(port, { timeout = 5000 } = {}) {
+export function waitUntilBusy(port, { timeout = 5000 } = {}) {
 	return new Promise((fulfil, reject) => {
 		const t = setTimeout(() => {
 			reject(new Error(`timed out waiting for connection`));

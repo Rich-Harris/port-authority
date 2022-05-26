@@ -1,11 +1,11 @@
 import { check } from './check.js';
 
 /**
- * Wait until a port is available
+ * Wait until `port` is available
  * @param {number} port
  * @param {{ timeout?: number }} options
  */
-export function until(port, { timeout = 5000 } = {}) {
+export function waitUntilFree(port, { timeout = 5000 } = {}) {
 	return new Promise((fulfil, reject) => {
 		const t = setTimeout(() => {
 			reject(new Error(`timed out waiting for connection`));
