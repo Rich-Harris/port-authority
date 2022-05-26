@@ -1,5 +1,9 @@
 # post-authority changelog
 
+## 2.0.1
+
+- Include `src` in `files`
+
 ## 2.0.0
 
 - Convert to native JavaScript modules

@@ -1,7 +1,7 @@
 {
 	"name": "port-authority",
 	"description": "port-authority",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"main": "src/index.js",
 	"module": "src/index.js",
 	"exports": {
@@ -14,6 +14,7 @@
 	"repository": "Rich-Harris/port-authority",
 	"types": "types/index.d.ts",
 	"files": [
+		"src",
 		"types"
 	],
 	"type": "module",
