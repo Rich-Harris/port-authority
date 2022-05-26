@@ -1,5 +1,6 @@
 import * as net from 'net';
 import { weird } from './weird';
+import { host } from './constants';
 
 export function find(port: number): Promise<number> {
 	return <Promise<number>>weird().then(weird => {
@@ -23,7 +24,7 @@ function get_port(port: number, cb: (port: number) => void) {
 		get_port(port + 1, cb);
 	});
 
-	server.listen({ port }, () => {
+	server.listen({ host, port }, () => {
 		server.close(() => {
 			cb(port);
 		});
@@ -32,7 +33,7 @@ function get_port(port: number, cb: (port: number) => void) {
 
 function get_port_weird(port: number, cb: (port: number) => void) {
 	const client = net
-		.createConnection({ port }, () => {
+		.createConnection({ host, port }, () => {
 			client.end();
 			get_port(port + 1, cb);
 		})

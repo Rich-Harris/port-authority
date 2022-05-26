@@ -1,6 +1,8 @@
 import * as net from 'net';
+import { host } from './constants';
 
 let promise: Promise<any>;
+
 
 export function weird() {
 	if (!promise) {
@@ -19,7 +21,7 @@ function get_weird(port: number) {
 			fulfil(get_weird(port + 1));
 		});
 
-		server.listen({ port }, () => {
+		server.listen({ host, port }, () => {
 			const server2 = net.createServer();
 
 			server2.unref();
@@ -30,13 +32,13 @@ function get_weird(port: number) {
 				});
 			});
 
-			server2.listen({ port }, () => {
-				server2.close(() => {
-					server.close(() => {
-						fulfil(true);
-					});
-				});
-			});
+			server2.listen({ host, port }, () => {
+        server2.close(() => {
+          server.close(() => {
+            fulfil(true);
+          });
+        });
+      });
 		});
 	});
 }
