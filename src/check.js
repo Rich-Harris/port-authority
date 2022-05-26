@@ -1,14 +1,18 @@
 import * as net from 'net';
-import { weird } from './weird';
-import { host } from './constants';
+import { weird } from './shared/weird.js';
+import { host } from './shared/constants.js';
 
-export function check(port: number) {
-	return weird().then(weird => {
+/**
+ * Check if `port` is available
+ * @param {number} port
+ */
+export function check(port) {
+	return weird().then((weird) => {
 		if (weird) {
 			return check_weird(port);
 		}
 
-		return new Promise(fulfil => {
+		return new Promise((fulfil) => {
 			const server = net.createServer();
 
 			server.unref();
@@ -26,8 +30,9 @@ export function check(port: number) {
 	});
 }
 
-function check_weird(port: number) {
-	return new Promise(fulfil => {
+/** @param {number} port */
+function check_weird(port) {
+	return new Promise((fulfil) => {
 		const client = net
 			.createConnection({ host, port }, () => {
 				client.end();

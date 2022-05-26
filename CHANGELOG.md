@@ -1,5 +1,10 @@
 # post-authority changelog
 
+## 2.0.0
+
+- Convert to native JavaScript modules
+- Remove `wait` and `until` methods
+
 ## 1.2.0
 
 - Add `until` method

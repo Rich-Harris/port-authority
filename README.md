@@ -29,14 +29,14 @@ async function start(port) {
   });
 
   try {
-    await ports.wait(port, {  // also aliased as ports.waitUntilBusy(...)
+    await ports.waitUntilBusy(port, {
       timeout: 5000
     });
 
     console.log(`> Server is running on port ${port}`);
 
     setTimeout(() => proc.kill(), 100);
-    await ports.until(port); // also aliased as ports.waitUntilFree(...)
+    await ports.waitUntilFree(port);
 
     console.log(`> Port ${port} is free`);
   } catch (err) {
@@ -49,7 +49,6 @@ start();
 ```
 
 There are existing libraries to do this stuff, but I couldn't find any that do all the things that port-authority does, with treeshakeable functions and a modern Promise-based API.
-
 
 ## Additional functions
 
@@ -66,7 +65,6 @@ const killed = await ports.kill(n);
 ```
 
 PRs welcome to make this work on all operating systems.
-
 
 ## License
 

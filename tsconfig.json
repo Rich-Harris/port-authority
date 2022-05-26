@@ -1,17 +1,18 @@
 {
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "diagnostics": true,
-        "noImplicitThis": true,
-        "noEmitOnError": true,
-        "lib": ["es5", "es6", "dom"]
-    },
-    "target": "ES6",
-    "module": "ES6",
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"noImplicitAny": true,
+		"diagnostics": true,
+		"noImplicitThis": true,
+		"noEmitOnError": true,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"declarationDir": "types",
+		"lib": ["es5", "es6", "dom"]
+	},
+	"target": "ES6",
+	"module": "ES6",
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }
