@@ -1,5 +1,6 @@
 import * as net from 'net';
 import { weird } from './weird';
+import { host } from './constants';
 
 export function check(port: number) {
 	return weird().then(weird => {
@@ -16,7 +17,7 @@ export function check(port: number) {
 				fulfil(false);
 			});
 
-			server.listen({ port }, () => {
+			server.listen({ host, port }, () => {
 				server.close(() => {
 					fulfil(true);
 				});
@@ -28,7 +29,7 @@ export function check(port: number) {
 function check_weird(port: number) {
 	return new Promise(fulfil => {
 		const client = net
-			.createConnection({ port }, () => {
+			.createConnection({ host, port }, () => {
 				client.end();
 				fulfil(false);
 			})
