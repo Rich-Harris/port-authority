@@ -23,7 +23,7 @@
 		"typescript": "^3.8.3"
 	},
 	"scripts": {
-		"build-declarations": "tsc -d && node scripts/move-type-declarations.js",
+		"build-declarations": "tsc",
 		"build": "npm run build-declarations && rollup -c",
 		"dev": "rollup -cw",
 		"test": "mocha --opts mocha.opts",
