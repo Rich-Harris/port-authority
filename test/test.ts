@@ -4,25 +4,43 @@ import * as assert from 'assert';
 import * as http from 'http';
 import * as ports from '../src/index';
 import { host } from '../src/constants';
+import type { Socket } from 'net';
 
-describe('port-authority', () => {
+describe('port-authority', function () {
+	this.timeout(5000);
+
 	function createServer() {
 		const server = http.createServer();
+
+		const sockets: Set<Socket> = new Set();
+
+		server.on('connection', (socket) => {
+			sockets.add(socket);
+
+			socket.on('close', () => {
+				sockets.delete(socket);
+			});
+		});
+
 		return {
+			_: server,
+
 			listen(port: number) {
 				return new Promise((fulfil, reject) => {
-					server.listen({host, port}, (err?: Error) => {
+					server.listen({ host, port }, (err?: Error) => {
 						if (err) reject(err);
-						else fulfil();
+						else fulfil(undefined);
 					});
 				});
 			},
 
 			close() {
 				return new Promise((fulfil, reject) => {
+					sockets.forEach((socket) => socket.destroy());
+
 					server.close((err?: Error) => {
 						if (err) reject(err);
-						else fulfil();
+						else fulfil(undefined);
 					});
 				});
 			}
@@ -32,24 +50,22 @@ describe('port-authority', () => {
 	let server: any;
 	beforeEach(() => {
 		server = createServer();
-	})
+	});
 
 	afterEach(async () => {
 		try {
-			await server.close();	
+			await server.close();
 		} catch (error) {
-			// Ignore not listening error
+			if (error.code === 'ERR_SERVER_NOT_RUNNING') return;
+			throw error;
 		}
-	})
+	});
 
 	describe('blame', () => {
 		it('returns null if port is unoccupied', async () => {
 			const pid = await ports.blame(3000);
 
-			assert.equal(
-				pid,
-				null
-			);
+			assert.equal(pid, null);
 		});
 
 		it('returns the ID of a process on a given port', async () => {
@@ -57,46 +73,30 @@ describe('port-authority', () => {
 
 			const pid = await ports.blame(3000);
 
-			assert.equal(
-				pid,
-				process.pid
-			);
+			assert.equal(pid, process.pid);
 		});
 	});
 
 	describe('check', () => {
 		it('returns true if a port is available', async () => {
-			assert.equal(
-				await ports.check(3000),
-				true
-			);
+			assert.equal(await ports.check(3000), true);
 		});
 
 		it('returns false if a port is unavailable', async () => {
 			await server.listen(3000);
 
-			assert.equal(
-				await ports.check(3000),
-				false
-			);
-
+			assert.equal(await ports.check(3000), false);
 		});
 	});
 
 	describe('find', () => {
 		it('returns input if port is available', async () => {
-			assert.equal(
-				await ports.find(3000),
-				3000
-			);
+			assert.equal(await ports.find(3000), 3000);
 		});
 
 		it('finds nearest available port to input', async () => {
 			await server.listen(3000);
-			assert.equal(
-				await ports.find(3000),
-				3001
-			);			
+			assert.equal(await ports.find(3000), 3001);
 		});
 	});
 
@@ -143,31 +143,31 @@ describe('port-authority', () => {
 			try {
 				spinCpu(5000);
 				await ports.wait(3000);
-			}catch(error){
+			} catch (error) {
 				assert.fail(error.message);
 			}
 		}).timeout(11000); // two * default ports.wait() timeouts + one second
 	});
 });
 
-function spinCpu(duration:number /* ms */){
+function spinCpu(duration: number /* ms */) {
 	let spinning = true;
 	// stop after ~5s
-	setTimeout(()=>spinning=false, duration);
+	setTimeout(() => (spinning = false), duration);
 	loop();
 
-	function loop(){
-		if(!spinning) return;
+	function loop() {
+		if (!spinning) return;
 		blockCpuFor(999);
 		setTimeout(loop, 1);
 	}
 
-	function blockCpuFor(ms:number) {
+	function blockCpuFor(ms: number) {
 		let end = new Date().getTime() + ms;
 		let counter = 0;
-		while(spinning) {
+		while (spinning) {
 			counter += new Date().getTime();
-			if (new Date().getTime() > end){
+			if (new Date().getTime() > end) {
 				break;
 			}
 		}
